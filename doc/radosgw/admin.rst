@@ -439,9 +439,6 @@ The Ceph Object Gateway makes it possible for you to set quotas on users and
 buckets owned by users. Quotas include the maximum number of objects in a
 bucket and the maximum storage size a bucket can hold.
 
-- **Bucket:** The ``--bucket`` option allows you to specify a quota for
-  buckets the user owns.
-
 - **Maximum Objects:** The ``--max-objects`` setting allows you to specify
   the maximum number of objects. A negative value disables this setting.
   
@@ -450,13 +447,12 @@ bucket and the maximum storage size a bucket can hold.
   setting.
   
 - **Quota Scope:** The ``--quota-scope`` option sets the scope for the quota.
-  The options are ``bucket`` and ``user``. Bucket quotas apply to each bucket
-  owned by the user. User Quotas are summed across all buckets owned by the
-  user. 
-
+  The options are ``bucket`` and ``user``.
 
 Set User Quota
 --------------
+
+User Quotas are summed across all buckets owned by the user.
 
 Before you enable a quota, you must first set the quota parameters.
 To set quota parameters, run a command of the following form: 
@@ -494,13 +490,14 @@ To disable an enabled user quota, run a command of the following form:
 Set Bucket Quota
 ----------------
 
-Bucket quotas apply to the buckets owned by the specified ``uid``. They are
-independent of the user. To set a bucket quota, run a command of the following
-form:
+If the ``bucket`` flag is specified, the bucket quota applies to a single bucket with the specified name.
+Else, if the ``uid`` flag is specified, the bucket quota applies to all buckets owned by the user with the specified UID.
+
+To set a bucket quota, run a command of the following form:
 
 .. prompt:: bash #
 
-   radosgw-admin quota set --uid=<uid> --quota-scope=bucket [--max-objects=<num objects>] [--max-size=<max size]
+   radosgw-admin quota set --quota-scope=bucket {--bucket=<bucket name> | --uid=<uid>} [--max-objects=<num objects>] [--max-size=<max size>]
 
 A negative value for ``--max-objects`` or ``--max-size`` means that the
 specific quota attribute is disabled.
@@ -514,13 +511,13 @@ To enable a bucket quota, run a command of the following form:
 
 .. prompt:: bash #
 
-   radosgw-admin quota enable --quota-scope=bucket --uid=<uid>
+   radosgw-admin quota enable --quota-scope=bucket {--bucket=<bucket name> | --uid=<uid>}
 
 To disable an enabled bucket quota, run a command of the following form: 
 
 .. prompt:: bash #
 
-   radosgw-admin quota disable --quota-scope=bucket --uid=<uid>
+   radosgw-admin quota disable --quota-scope=bucket {--bucket=<bucket name> | --uid=<uid>}
 
 
 Get Quota Settings
